@@ -171,15 +171,7 @@ export default function SplashScreen() {
         </div>
       )}
 
-      {/* Debug button - always visible for testing */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2">
-        <button
-          onClick={handleRedirect}
-          className="px-4 py-2 bg-red-500 text-white rounded"
-        >
-          Test Redirect
-        </button>
-      </div>
+
 
       {/* Performance optimization: Preload home page */}
       <link rel="prefetch" href="/home" />
