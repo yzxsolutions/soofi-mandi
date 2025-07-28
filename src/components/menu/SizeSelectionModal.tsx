@@ -206,9 +206,9 @@ export default function SizeSelectionModal({
                   Adding...
                 </div>
               ) : (
-                <div className="flex items-center justify-center gap-2 z-50">
+                <div className="flex items-center justify-center gap-2">
                   <ShoppingCart className="h-4 w-4" />
-                  Add - ₹ {getSizePrice(selectedSize)}
+                  Add - QR {getSizePrice(selectedSize)}
                 </div>
               )}
             </Button>
@@ -220,8 +220,8 @@ export default function SizeSelectionModal({
                 {selectedSize} Portion
               </span>
             </p>
-            </div>
           </div>
+        </div>
       </div>
     </div>
   );

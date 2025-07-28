@@ -55,26 +55,22 @@ export const useCartStore = create<CartStore>()(
 
       addItem: (newItem) => {
         set((state) => {
-          // Create unique key for item with customizations
-          const itemKey = `${newItem.id}-${JSON.stringify(newItem.customizations)}`;
-          const existingItemIndex = state.items.findIndex(
-            (item) => {
-              const existingKey = `${item.id}-${JSON.stringify(item.customizations)}`;
-              return existingKey === itemKey;
-            }
+          // The newItem.id is the unique variant ID from the modal (e.g., "mandi-1-Full")
+          const existingItem = state.items.find(
+            (item) => item.id === newItem.id
           );
 
           let updatedItems;
-          if (existingItemIndex >= 0) {
-            // Update quantity if item with same customizations exists
+          if (existingItem) {
+            // Update quantity if item with same ID exists
             updatedItems = state.items.map((item, index) =>
-              index === existingItemIndex
+              item.id === newItem.id
                 ? { ...item, quantity: item.quantity + newItem.quantity }
                 : item
             );
           } else {
-            // Add new item with unique key as id
-            updatedItems = [...state.items, { ...newItem, id: itemKey }];
+            // Add new item
+            updatedItems = [...state.items, newItem];
           }
 
           const itemCount = updatedItems.reduce(
