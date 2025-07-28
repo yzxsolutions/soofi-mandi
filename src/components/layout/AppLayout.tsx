@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
-// import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -25,9 +25,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <Footer />
       </footer>
       {/* Mobile Bottom Navigation - Only shows on mobile */}
-      {/* <nav role="navigation" aria-label="Mobile navigation" className="md:hidden">
+      <nav role="navigation" aria-label="Mobile navigation" className="md:hidden">
         <MobileBottomNav />
-      </nav> */}
+      </nav>
     </div>
   );
 }
