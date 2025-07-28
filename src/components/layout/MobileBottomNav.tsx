@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -12,6 +12,7 @@ import {
   ChevronUp
 } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
+import { useUIStore } from '@/stores/ui-store';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -24,26 +25,27 @@ interface NavItem {
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { itemCount } = useCartStore();
+  const isModalOpen = useUIStore((state) => state.isModalOpen);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
 
   // Auto-hide on scroll down, show on scroll up
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
       }
       
-      setLastScrollY(currentScrollY);
+      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   const navItems: NavItem[] = [
     { href: '/home', label: 'Home', icon: Home },
@@ -61,7 +63,7 @@ export function MobileBottomNav() {
       <nav 
         className={cn(
           'md:hidden fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 safe-area-bottom',
-          isVisible ? 'translate-y-0' : 'translate-y-full'
+          isVisible && !isModalOpen ? 'translate-y-0' : 'translate-y-full'
         )}
       >
         <div className="bg-black/90 backdrop-blur-xl border-t border-primary/20">
@@ -89,7 +91,7 @@ export function MobileBottomNav() {
                     />
                     
                     {/* Badge for cart */}
-                    {item.badge && item.badge > 0 && (
+                    {typeof item.badge === 'number' && item.badge > 0 && (
                       <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
                         {item.badge > 99 ? '99+' : item.badge}
                       </span>

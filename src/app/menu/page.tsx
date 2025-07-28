@@ -309,9 +309,6 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* Floating Cart */}
-      <FloatingCart />
-
       {/* Quick View Modal */}
       <QuickViewModal
         item={quickViewItem}

@@ -36,8 +36,7 @@ export default function HomePage() {
       {/* <RecentOrders /> */}
       <FeaturedItems />
       <ContactSection />
-      {/* Floating Cart */}
-      <FloatingCart />
+  
     </div>
   );
 }

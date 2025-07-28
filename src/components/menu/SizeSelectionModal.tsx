@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MenuItem } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { X, ShoppingCart, Check } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart-store";
+import { useUIStore } from "@/stores/ui-store";
 
 interface SizeSelectionModalProps {
   item: MenuItem;
@@ -21,8 +23,24 @@ export default function SizeSelectionModal({
   const [selectedSize, setSelectedSize] = useState<string>("Full");
   const [addingToCart, setAddingToCart] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
+  const setModalOpen = useUIStore((state) => state.setModalOpen);
+  const [isMounted, setIsMounted] = useState(isOpen);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setModalOpen(isOpen);
+
+    // Handle mounting/unmounting for animations
+    let timeoutId: NodeJS.Timeout;
+    if (isOpen) {
+      setIsMounted(true);
+    } else {
+      // Wait for exit animation to finish before unmounting
+      timeoutId = setTimeout(() => setIsMounted(false), 300);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [isOpen, setModalOpen]);
+
+  if (!isMounted) return null;
 
   const handleAddToCart = async () => {
     setAddingToCart(true);
@@ -61,110 +79,118 @@ export default function SizeSelectionModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl">
-      {/* Full Screen Background with Pattern */}
-      <div className="absolute inset-0 geometric-pattern opacity-20" />
-      
-      {/* Close Button - Top Right */}
-      <button
-        onClick={onClose}
-        className="absolute top-8 right-8 z-10 touch-target-large bg-gray-800/60 hover:bg-gray-700/60 rounded-full transition-all duration-300 hover:scale-110 border-2 border-gray-600/40 hover:border-primary/50"
+    // Backdrop container
+    <div
+      className={cn(
+        "fixed inset-0 z-50 transition-opacity duration-300",
+        isOpen ? "opacity-100" : "opacity-0"
+      )}
+      onClick={onClose}
+      aria-modal="true"
+      role="dialog"
+    >
+      {/* Backdrop with blur, matching the checkout summary modal */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+
+      {/* Modal/Sheet Panel: stopPropagation prevents backdrop click from firing when clicking the panel */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={cn(
+          "absolute bottom-0 left-0 right-0 flex w-full max-h-[85vh] flex-col rounded-t-2xl border-t-2 border-primary/30 bg-black/95 shadow-warm-xl transition-transform duration-300 ease-out",
+          // On desktop, constrain width and center it horizontally at the bottom.
+          "md:left-1/2 md:max-w-xl md:-translate-x-1/2",
+          // Animation state (always slide from bottom)
+          isOpen ? "translate-y-0" : "translate-y-full"
+        )}
       >
-        <X className="w-6 h-6 text-foreground/90" />
-      </button>
+        {/* Grabber handle for mobile */}
+        <div className="absolute top-3 left-1/2 h-1.5 w-12 -translate-x-1/2 rounded-full bg-gray-600 md:hidden" />
 
-      {/* Full Screen Modal Content */}
-      <div className="relative w-full h-full flex flex-col items-center justify-center p-8">
-        {/* Modal Container */}
-        <div className="relative bg-black/90 backdrop-blur-xl rounded-3xl border-2 border-primary/40 w-full max-w-2xl shadow-2xl animate-fade-in-up">
-          {/* Decorative Border */}
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/30 via-secondary/30 to-primary/30 p-[2px]">
-            <div className="w-full h-full bg-black/95 rounded-3xl" />
+        {/* Header */}
+        <div className="relative flex flex-col items-center p-6 text-center md:p-8">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-600/40 bg-gray-800/60 transition-all duration-300 hover:scale-110 hover:border-primary/50 hover:bg-gray-700/60"
+          >
+            <X className="h-5 w-5 text-foreground/90" />
+          </button>
+          <div className="relative mb-4 h-20 w-20 rounded-2xl border-3 border-primary/40 shadow-warm-lg md:h-24 md:w-24">
+            <Image
+              src={item.images[0] || "/images/mandi/mandi.png"}
+              alt={item.name}
+              fill
+              className="object-cover rounded-xl"
+              sizes="(max-width: 768px) 80px, 96px"
+            />
           </div>
-          
-          {/* Cultural Pattern Overlay */}
-          <div className="absolute inset-0 rounded-3xl geometric-pattern-dense opacity-10" />
-          {/* Header */}
-          <div className="relative flex items-center justify-center p-8 border-b border-primary/30 bg-gradient-to-r from-black/50 to-gray-900/50 backdrop-blur-sm rounded-t-3xl">
-            <div className="flex flex-col items-center text-center">
-              <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-3 border-primary/40 shadow-warm-lg animate-spin-slow mb-6">
-                <Image
-                  src={item.images[0] || "/images/mandi/mandi.png"}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                  sizes="96px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                <div className="absolute inset-0 geometric-pattern-dense opacity-20" />
-              </div>
-              <div>
-                <h3 className="text-3xl font-bold text-foreground mb-3 font-display animate-shimmer-text">
-                  {item.name}
-                </h3>
-                <p className="text-lg text-primary/90 font-medium">
-                  Choose your perfect portion size
-                </p>
-              </div>
-            </div>
+          <div>
+            <h3 className="font-display text-2xl font-bold text-foreground md:text-3xl">
+              {item.name}
+            </h3>
+            <p className="text-md text-primary/90 md:text-lg">
+              Choose your perfect portion size
+            </p>
           </div>
-
-        {/* Size Options */}
-        <div className="relative p-6 space-y-4">
-          {item.customizations.sizes.map((size, index) => (
-            <div
-              key={size.name}
-              className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 touch-target ${
-                selectedSize === size.name
-                  ? "border-primary bg-primary/10 shadow-warm-glow"
-                  : "border-gray-700/50 hover:border-primary/50 bg-gray-800/30 hover:bg-gray-800/50"
-              }`}
-              onClick={() => setSelectedSize(size.name)}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 flex-1">
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-                      selectedSize === size.name
-                        ? "border-primary bg-primary"
-                        : "border-gray-500"
-                    }`}
-                  >
-                    {selectedSize === size.name && (
-                      <Check className="w-3 h-3 text-white" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold text-foreground">
-                      {size.name} Portion
-                    </h4>
-                    <p className="text-sm text-foreground/70">
-                      {size.description}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl font-bold text-primary">
-                    QR {getSizePrice(size.name)}
-                  </div>
-                  {size.price !== 0 && (
-                    <div className="text-xs text-foreground/60">
-                      {size.price > 0 ? "+" : ""}QR {size.price}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
 
-        {/* Footer */}
-        <div className="relative p-6 border-t border-primary/20">
-          <div className="flex gap-3">
+        {/* Scrollable Size Options */}
+        <div className="flex-1 overflow-y-auto px-6 pb-4">
+          <div className="space-y-4">
+            {item.customizations.sizes.map((size) => (
+              <div
+                key={size.name}
+                className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-300 touch-target ${
+                  selectedSize === size.name
+                    ? "border-primary bg-primary/10 shadow-warm-glow"
+                    : "border-gray-700/50 bg-gray-800/30 hover:border-primary/50 hover:bg-gray-800/50"
+                }`}
+                onClick={() => setSelectedSize(size.name)}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-1 items-center gap-3">
+                    <div
+                      className={`flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                        selectedSize === size.name
+                          ? "border-primary bg-primary"
+                          : "border-gray-500"
+                      }`}
+                    >
+                      {selectedSize === size.name && (
+                        <Check className="h-3 w-3 text-white" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-foreground md:text-lg">
+                        {size.name} Portion
+                      </h4>
+                      <p className="text-sm text-foreground/70">
+                        {size.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-primary md:text-xl">
+                      QR {getSizePrice(size.name)}
+                    </div>
+                    {size.price !== 0 && (
+                      <div className="text-xs text-foreground/60">
+                        {size.price > 0 ? "+" : ""}QR {size.price}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sticky Footer */}
+        <div className="mt-auto border-t border-primary/20 p-6">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <Button
               onClick={onClose}
               variant="outline"
-              className="flex-1 bg-transparent border-2 border-gray-600/50 hover:border-gray-500/50 text-foreground hover:bg-gray-800/30 rounded-xl py-3"
+              className="flex-1 rounded-xl border-2 border-gray-600/50 bg-transparent py-3 text-foreground hover:border-gray-500/50 hover:bg-gray-800/30"
             >
               Cancel
             </Button>
@@ -172,33 +198,30 @@ export default function SizeSelectionModal({
               onClick={handleAddToCart}
               disabled={addingToCart}
               variant="cta"
-              className="flex-1 rounded-xl py-3 flex items-center justify-center gap-2 font-semibold"
+              className="flex-1 rounded-xl bg-primary py-3 font-semibold"
             >
               {addingToCart ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   Adding...
-                </>
+                </div>
               ) : (
-                <>
-                  <ShoppingCart className="w-4 h-4" />
-                  Add - QR {getSizePrice(selectedSize)}
-                </>
+                <div className="flex items-center justify-center gap-2 z-50">
+                  <ShoppingCart className="h-4 w-4" />
+                  Add - ₹ {getSizePrice(selectedSize)}
+                </div>
               )}
             </Button>
           </div>
-
-          {/* Price Summary */}
           <div className="mt-4 text-center">
-            <p className="text-foreground/60 text-sm">
+            <p className="text-sm text-foreground/60">
               Selected:{" "}
-              <span className="text-primary font-semibold">
+              <span className="font-semibold text-primary">
                 {selectedSize} Portion
               </span>
             </p>
+            </div>
           </div>
-        </div>
-        </div>
       </div>
     </div>
   );
