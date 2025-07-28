@@ -1,9 +1,17 @@
-'use client';
-
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import OrderConfirmationContent from '@/components/order-confirmation/OrderConfirmationContent';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+
+// Generate static params for static export
+export async function generateStaticParams() {
+  // Generate some sample order IDs for static export
+  return [
+    { orderId: 'sample-order-1' },
+    { orderId: 'sample-order-2' },
+    { orderId: 'sample-order-3' },
+  ];
+}
 
 interface OrderConfirmationPageProps {
   params: Promise<{
