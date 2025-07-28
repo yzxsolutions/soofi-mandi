@@ -1,7 +1,7 @@
 // This is a server component
 import { Suspense } from 'react';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import OrderWrapper from './OrderWrapper.tsx';
+import OrderWrapper from './OrderWrapper';
 
 // We no longer need generateStaticParams since we removed 'output: export' from next.config.js
 
