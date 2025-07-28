@@ -1,8 +1,28 @@
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/home/HeroSection";
-import { FeaturedItems } from "@/components/home/FeaturedItems";
-import { ContactSection } from "@/components/home/ContactSection";
 import FloatingCart from "@/components/menu/FloatingCart";
+import { FeaturedItemsSkeleton } from "@/components/ui/SkeletonLoader";
+import { Skeleton } from "@/components/ui/SkeletonLoader";
+
+const FeaturedItems = dynamic(
+  () =>
+    import("@/components/home/FeaturedItems").then((mod) => mod.FeaturedItems),
+  {
+    loading: () => <FeaturedItemsSkeleton />,
+    ssr: false,
+  }
+);
+
+const ContactSection = dynamic(
+  () =>
+    import("@/components/home/ContactSection").then(
+      (mod) => mod.ContactSection
+    ),
+  {
+    loading: () => <Skeleton variant="card" className="h-96 w-full" />,
+  }
+);
 
 export const metadata: Metadata = {
   title: "Home - Soofi Mandi",
