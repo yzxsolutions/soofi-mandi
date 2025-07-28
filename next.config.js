@@ -133,9 +133,10 @@ const nextConfig = {
   // Output configuration for Netlify
   // Removing 'export' output to allow dynamic routes without generateStaticParams
   // output: "export",
-  trailingSlash: true,
+  // trailingSlash: true, // Let Netlify's Next.js plugin handle this
   images: {
-    unoptimized: true,
+    // Re-enable image optimization for Netlify, which supports it.
+    unoptimized: false,
     formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
