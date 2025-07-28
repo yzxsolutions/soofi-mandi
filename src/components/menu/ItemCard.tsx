@@ -51,9 +51,9 @@ export default function ItemCard({ item, onQuickView, showQuickView = true }: It
 
   return (
     <article className="group animate-fade-in-up bg-transparent card-accessible" role="article" aria-labelledby={`item-${item.id}-name`}>
-      {/* Item Image with Spinning Animation */}
-      <div className="mobile-image-container mb-4 overflow-hidden" role="img" aria-label={`${item.name} dish image`}>
-        <div className="animate-spin-slow w-full h-full">
+      {/* Item Image with Spinning Animation - Centered and reduced size for mobile */}
+      <div className="mobile-image-container mb-4 overflow-hidden aspect-ratio-[4/3] sm:aspect-ratio-[1/1] mx-auto" role="img" aria-label={`${item.name} dish image`} style={{maxHeight: '180px', maxWidth: '250px'}}>
+        <div className="animate-spin-slow w-full h-full flex items-center justify-center">
           <Image
             src={
               item.images && item.images.length > 0
@@ -104,10 +104,10 @@ export default function ItemCard({ item, onQuickView, showQuickView = true }: It
 
       {/* Item Details */}
       <div className="mobile-text-center mobile-space-y-4">
-        {/* Item Name */}
+        {/* Item Name - Further increased font size for mobile */}
         <h3 
           id={`item-${item.id}-name`}
-          className="responsive-text-h3 text-foreground group-hover:text-primary transition-colors"
+          className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-primary transition-colors"
         >
           {item.name}
         </h3>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -9,10 +9,12 @@ import {
   UtensilsCrossed,
   Phone,
   User,
+  History,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart-store";
+import { hasRecentOrders } from "@/lib/orderStorage";
 import Image from "next/image";
 
 // --- Sub-components for better structure and readability ---
@@ -76,6 +78,19 @@ const DesktopNavigationItem: React.FC<NavigationItemProps> = ({
 const DesktopNavigation: React.FC = () => {
   const pathname = usePathname();
   const { itemCount } = useCartStore();
+  const [showOrderHistory, setShowOrderHistory] = useState(false);
+  
+  // Check for recent orders on component mount and when pathname changes
+  useEffect(() => {
+    setShowOrderHistory(hasRecentOrders());
+    
+    // Set up interval to check for expired orders
+    const intervalId = setInterval(() => {
+      setShowOrderHistory(hasRecentOrders());
+    }, 5 * 60 * 1000); // Check every 5 minutes
+    
+    return () => clearInterval(intervalId);
+  }, [pathname]);
 
   const navItems = [
     { href: "/home", label: "Home", icon: Home },
@@ -117,6 +132,47 @@ const DesktopNavigation: React.FC = () => {
               />
             ))}
 
+            {/* Order History - Only shown when there are recent orders */}
+            {showOrderHistory && (
+              <Link
+                href="/orders"
+                className="relative flex flex-col items-center justify-center gap-1 p-2 group transition-colors duration-300 touch-target"
+              >
+                {/* Background Glow Effect */}
+                <div
+                  className={cn(
+                    "absolute inset-0 bg-primary/10 rounded-xl blur-md opacity-0 transition-opacity duration-300 group-hover:opacity-50",
+                    isActive("/orders") && "opacity-100"
+                  )}
+                />
+
+                {/* Icon */}
+                <div
+                  className={cn(
+                    "relative transition-all duration-300",
+                    isActive("/orders") ? "text-primary" : "text-foreground/60 group-hover:text-primary"
+                  )}
+                >
+                  <History strokeWidth={isActive("/orders") ? 2.5 : 2} className="w-6 h-6" />
+                </div>
+
+                {/* Label */}
+                <span
+                  className={cn(
+                    "text-xs font-medium transition-colors duration-300",
+                    isActive("/orders") ? "text-primary" : "text-foreground/60 group-hover:text-primary"
+                  )}
+                >
+                  Orders
+                </span>
+
+                {/* Active Indicator Dot */}
+                {isActive("/orders") && (
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-primary rounded-full" />
+                )}
+              </Link>
+            )}
+            
             {/* Divider */}
             <div className="w-px h-10 bg-gradient-to-b from-transparent via-primary/30 to-transparent mx-1"></div>
 

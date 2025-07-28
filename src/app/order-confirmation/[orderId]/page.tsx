@@ -1,17 +1,9 @@
+// This is a server component
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
-import OrderConfirmationContent from '@/components/order-confirmation/OrderConfirmationContent';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import OrderWrapper from './OrderWrapper.tsx';
 
-// Generate static params for static export
-export async function generateStaticParams() {
-  // Generate some sample order IDs for static export
-  return [
-    { orderId: 'sample-order-1' },
-    { orderId: 'sample-order-2' },
-    { orderId: 'sample-order-3' },
-  ];
-}
+// We no longer need generateStaticParams since we removed 'output: export' from next.config.js
 
 interface OrderConfirmationPageProps {
   params: Promise<{
@@ -19,7 +11,9 @@ interface OrderConfirmationPageProps {
   }>;
 }
 
-export default function OrderConfirmationPage({ params }: OrderConfirmationPageProps) {
+export default async function OrderConfirmationPage({ params }: OrderConfirmationPageProps) {
+  const { orderId } = await params;
+
   return (
     <div className="min-h-screen bg-background">
       <Suspense fallback={
@@ -27,35 +21,8 @@ export default function OrderConfirmationPage({ params }: OrderConfirmationPageP
           <LoadingSpinner size="lg" />
         </div>
       }>
-        <OrderConfirmationWrapper params={params} />
+        <OrderWrapper orderId={orderId} />
       </Suspense>
     </div>
   );
-}
-
-async function OrderConfirmationWrapper({ params }: OrderConfirmationPageProps) {
-  const { orderId } = await params;
-
-  if (!orderId) {
-    notFound();
-  }
-
-  // For now, create a mock order since we don't have a real order system
-  const mockOrder = {
-    id: orderId,
-    orderNumber: `ORD-${orderId}`,
-    items: [],
-    customer: { name: '', phone: '', email: '' },
-    delivery: { address: '', contactPerson: '' },
-    payment: { method: 'cash' as const, status: 'completed' as const, amount: 0 },
-    status: 'confirmed' as const,
-    timestamps: { created: new Date() },
-    subtotal: 0,
-    tax: 0,
-    deliveryCharge: 0,
-    discount: 0,
-    total: 0
-  };
-
-  return <OrderConfirmationContent order={mockOrder} />;
 }

@@ -1,4 +1,4 @@
-const path = require("path");
+import path from 'path';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -131,7 +131,8 @@ const nextConfig = {
   // },
 
   // Output configuration for Netlify
-  output: "export",
+  // Removing 'export' output to allow dynamic routes without generateStaticParams
+  // output: "export",
   trailingSlash: true,
   images: {
     unoptimized: true,
@@ -165,4 +166,4 @@ const nextConfig = {
   poweredByHeader: false,
 };
 
-module.exports = nextConfig;
+export default nextConfig;

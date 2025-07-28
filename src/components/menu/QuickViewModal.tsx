@@ -99,7 +99,9 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in-up">
-      <div className="bg-black/80 backdrop-blur-xl rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-700/50 shadow-2xl animate-nav-entrance">
+      <div className="bg-black/80 backdrop-blur-xl sm:rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-700/50 shadow-2xl sm:animate-nav-entrance mobile-modal open">  
+        {/* Mobile drag handle - only visible on small screens */}
+        <div className="sm:hidden mobile-modal-handle"></div>
         {/* Header */}
         <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-gray-700/50 p-6 flex justify-between items-center rounded-t-3xl">
           <h2 className="text-2xl font-bold text-foreground">Quick View</h2>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/stores/cart-store";
+import { useCheckoutStore } from "@/stores/checkout-store";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 import { CustomerForm } from "@/components/checkout/CustomerForm";
 import { DeliveryForm } from "@/components/checkout/DeliveryForm";
@@ -13,8 +14,14 @@ import Link from "next/link";
 
 export default function CheckoutPage() {
   const { itemCount, getTotal } = useCartStore();
+  const { resetCheckout } = useCheckoutStore();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  
+  // Reset checkout data when the page loads
+  useEffect(() => {
+    resetCheckout();
+  }, []);
 
   // Redirect if cart is empty
   if (itemCount === 0) {

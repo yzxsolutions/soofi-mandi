@@ -73,6 +73,11 @@ export default function OrderConfirmationContent({ order }: OrderConfirmationCon
   // Calculate estimated delivery time (45 minutes from order time)
   const createdTime = new Date(order.timestamps.created);
   const estimatedDeliveryTime = new Date(createdTime.getTime() + 45 * 60 * 1000);
+  
+  // Set the delivery scheduled time to the estimated time
+  if (!order.delivery.scheduledTime) {
+    order.delivery.scheduledTime = estimatedDeliveryTime;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 print:p-0 pt-40">

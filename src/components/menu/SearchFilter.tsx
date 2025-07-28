@@ -209,33 +209,7 @@ export default function SearchFilter({
             </div>
           </div>
 
-          {/* Spice Level */}
-          <div>
-            <label className="block text-xs font-medium text-foreground/80 mb-2">
-              Spice Level
-            </label>
-            <div className="grid grid-cols-2 gap-1">
-              {[
-                { value: 'all', label: 'All', icon: '🌶️' },
-                { value: 'mild', label: 'Mild', icon: '🟢' },
-                { value: 'medium', label: 'Medium', icon: '🟡' },
-                { value: 'hot', label: 'Hot', icon: '🔴' },
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => handleFilterChange('spiceLevel', option.value)}
-                  className={`flex items-center gap-1 px-2 py-2 rounded-xl text-xs font-medium transition-colors ${
-                    filters.spiceLevel === option.value
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-800/40 text-foreground/70 hover:bg-primary/20 hover:text-primary border border-gray-700/50'
-                  }`}
-                >
-                  <span className="text-sm">{option.icon}</span>
-                  <span>{option.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Spice Level filter removed as requested */}
         </div>
       )}
     </div>

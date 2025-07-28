@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Search, Filter, X, ChevronDown } from "lucide-react";
 import CategoryNavigation from "@/components/menu/CategoryNavigation";
 import SearchFilter from "@/components/menu/SearchFilter";
 import MenuGrid from "@/components/menu/MenuGrid";
@@ -8,12 +9,14 @@ import FloatingCart from "@/components/menu/FloatingCart";
 import QuickViewModal from "@/components/menu/QuickViewModal";
 import { MenuItem, MenuFilter } from "@/types";
 import { searchMenuItems, mockMenuItems } from "@/lib/mock-data";
+import { Input } from "@/components/ui/Input";
 
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<MenuFilter>({
     category: "all",
     priceRange: { min: 0, max: 100 },
@@ -23,6 +26,14 @@ export default function MenuPage() {
   });
   const [quickViewItem, setQuickViewItem] = useState<MenuItem | null>(null);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  
+  const hasActiveFilters = 
+    filters.category !== 'all' ||
+    filters.dietary !== 'all' ||
+    filters.spiceLevel !== 'all' ||
+    filters.priceRange.min > 0 ||
+    filters.priceRange.max < 100 ||
+    searchQuery.length > 0;
 
   useEffect(() => {
     // Simulate API call
@@ -166,24 +177,74 @@ export default function MenuPage() {
 
         {/* Main Content */}
         <div className="flex-1">
-          {/* Mobile Filters - Shown only on mobile */}
-          <div className="lg:hidden sticky top-0 z-20 bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 p-4">
-            <div className="mb-4">
-              <CategoryNavigation
-                activeCategory={activeCategory}
-                onCategoryChange={handleCategoryChange}
-              />
+          {/* Mobile Search Bar - Shown only on mobile */}
+          <div className="lg:hidden bg-black border-b border-primary/20 shadow-lg p-4">
+            <div className="relative">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground/40 w-4 h-4" aria-hidden="true" />
+                <Input
+                  type="text"
+                  placeholder="Search menu items..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="pl-9 pr-8 py-2 w-full bg-black border border-primary/30 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors text-foreground placeholder-foreground/50 text-sm shadow-md"
+                  aria-label="Search menu items"
+                  role="searchbox"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => handleSearchChange('')}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-foreground/40 hover:text-foreground/60 touch-target focus-enhanced"
+                    aria-label="Clear search"
+                    title="Clear search"
+                  >
+                    <X className="w-4 h-4" aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="mt-2 flex items-center gap-2 px-3 py-2 bg-black border border-primary/30 rounded-xl text-sm font-medium text-foreground/70 hover:text-primary transition-colors touch-target focus-enhanced w-full justify-center shadow-md"
+                aria-expanded={isFilterOpen}
+                aria-controls="filter-panel"
+                aria-label={`${isFilterOpen ? 'Hide' : 'Show'} filters`}
+              >
+                <Filter className="w-4 h-4" aria-hidden="true" />
+                <span>Filters</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                {hasActiveFilters && (
+                  <span 
+                    className="bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center ml-1"
+                    aria-label="Active filters indicator"
+                    title="Active filters applied"
+                  >
+                    !
+                  </span>
+                )}
+              </button>
             </div>
-            <SearchFilter
-              filters={filters}
-              onFiltersChange={handleFiltersChange}
-              onSearchChange={handleSearchChange}
-              searchQuery={searchQuery}
-            />
+            
+            {/* Filter Panel - Only shown when filter button is clicked */}
+            {isFilterOpen && (
+              <div className="mt-4 pt-4 border-t border-primary/20 bg-black rounded-b-xl shadow-lg">
+                <div className="mb-4">
+                  <CategoryNavigation
+                    activeCategory={activeCategory}
+                    onCategoryChange={handleCategoryChange}
+                  />
+                </div>
+                <SearchFilter
+                  filters={filters}
+                  onFiltersChange={handleFiltersChange}
+                  onSearchChange={handleSearchChange}
+                  searchQuery={searchQuery}
+                />
+              </div>
+            )}
           </div>
 
           {/* Content */}
-          <div className="p-4 lg:p-8 pt-40">
+          <div className="p-4 lg:p-8">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-h1 text-foreground mb-4">Our Menu</h1>

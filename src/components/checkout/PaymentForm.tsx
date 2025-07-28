@@ -3,21 +3,27 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
-import { MobileForm, MobileRadioGroup, MobileInput } from '@/components/ui/MobileForm';
-import { CreditCard, Landmark } from 'lucide-react';
+import { MobileForm, MobileRadioGroup } from '@/components/ui/MobileForm';
 import { useCartStore } from '@/stores/cart-store';
+import { useCheckoutStore } from '@/stores/checkout-store';
 import { saveOrderToStorage } from '@/lib/orderStorage';
-import { Order } from '@/types';
+import { Order, PaymentInfo } from '@/types';
 
 type PaymentFormProps = {
   onBack: () => void;
 };
 
 export function PaymentForm({ onBack }: PaymentFormProps) {
-  const [paymentMethod, setPaymentMethod] = useState('cod');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { items, getTotal, getSubtotal, getTax, getDeliveryCharge, clearCart } = useCartStore();
+  const { customerInfo, deliveryInfo, paymentInfo, setPaymentInfo, resetCheckout } = useCheckoutStore();
+  const [paymentMethod, setPaymentMethod] = useState<PaymentInfo['method']>(paymentInfo.method);
+
+  const handlePaymentMethodChange = (value: string) => {
+    setPaymentMethod(value as PaymentInfo['method']);
+    setPaymentInfo({ method: value as PaymentInfo['method'] });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,28 +33,31 @@ export function PaymentForm({ onBack }: PaymentFormProps) {
       // Generate order ID
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
       
-      // Create order object
+      // Create order object with actual customer and delivery data
       const order: Order = {
         id: orderId,
-        orderNumber: `ORD-${orderId}`,
+        orderNumber: orderId.substring(0, 10),
         items: items,
         customer: {
-          name: 'Customer', // This would come from form data
-          email: 'customer@example.com',
-          phone: '+1234567890'
+          name: customerInfo.name,
+          email: customerInfo.email,
+          phone: customerInfo.phone
         },
         delivery: {
-          address: 'Customer Address',
-          contactPerson: 'Customer'
+          address: deliveryInfo.address,
+          instructions: deliveryInfo.instructions,
+          scheduledTime: deliveryInfo.scheduledTime ? new Date(deliveryInfo.scheduledTime) : undefined,
+          contactPerson: deliveryInfo.contactPerson
         },
         payment: {
-          method: paymentMethod === 'cod' ? 'cash' : 'online',
+          method: paymentMethod,
           status: 'completed',
           amount: getTotal()
         },
         status: 'confirmed',
         timestamps: {
-          created: new Date()
+          created: new Date(),
+          confirmed: new Date()
         },
         subtotal: getSubtotal(),
         tax: getTax(),
@@ -60,8 +69,9 @@ export function PaymentForm({ onBack }: PaymentFormProps) {
       // Save order to local storage
       saveOrderToStorage(order);
 
-      // Clear cart
+      // Clear cart and checkout data
       clearCart();
+      resetCheckout();
 
       // Redirect to confirmation page
       router.push(`/order-confirmation/${orderId}`);
@@ -76,56 +86,31 @@ export function PaymentForm({ onBack }: PaymentFormProps) {
   return (
     <MobileForm onSubmit={handleSubmit}>
       <MobileRadioGroup
-        name="paymentMethod"
         label="Payment Method"
+        name="paymentMethod"
         value={paymentMethod}
-        onChange={setPaymentMethod}
+        onChange={handlePaymentMethodChange}
         options={[
-          { 
-            value: 'cod', 
-            label: 'Cash on Delivery', 
-            description: 'Pay when your order arrives' 
-          },
-          { 
-            value: 'online', 
-            label: 'Pay Online', 
-            description: 'Credit/Debit card or digital wallet' 
-          },
+          { value: 'cash', label: 'Cash on Delivery' },
+          { value: 'online', label: 'Online Payment (Pay Now)' }
         ]}
       />
-
+      
+      {paymentMethod === 'cash' && (
+        <div className="p-4 bg-primary/10 rounded-lg border border-primary/20 mb-6">
+          <h3 className="text-lg font-medium mb-2">Cash on Delivery</h3>
+          <p className="text-foreground/70 text-sm">
+            You&apos;ll pay when your order arrives. Please have the exact amount ready.
+          </p>
+        </div>
+      )}
+      
       {paymentMethod === 'online' && (
-        <div className="mobile-card mobile-space-y-4 animate-fade-in-up">
-          <h4 className="mobile-subheading text-foreground">Enter Card Details</h4>
-          
-          <MobileInput
-            label="Card Number"
-            id="cardNumber"
-            name="cardNumber"
-            placeholder="1234 5678 9012 3456"
-            variant="cultural"
-            required
-            leftIcon={<CreditCard className="w-5 h-5" />}
-          />
-          
-          <div className="grid grid-cols-2 mobile-gap-4">
-            <MobileInput
-              label="Expiry Date"
-              id="expiryDate"
-              name="expiryDate"
-              placeholder="MM/YY"
-              variant="cultural"
-              required
-            />
-            <MobileInput
-              label="CVC"
-              id="cvc"
-              name="cvc"
-              placeholder="123"
-              variant="cultural"
-              required
-            />
-          </div>
+        <div className="p-4 bg-primary/10 rounded-lg border border-primary/20 mb-6">
+          <h3 className="text-lg font-medium mb-2">Online Payment</h3>
+          <p className="text-foreground/70 text-sm">
+            This is a demo application. No actual payment will be processed.
+          </p>
         </div>
       )}
 
