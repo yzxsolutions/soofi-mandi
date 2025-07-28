@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Enable experimental features for better performance
@@ -42,10 +44,10 @@ const nextConfig = {
       };
     }
 
-    // Optimize imports
+    // Optimize imports and add path aliases
     config.resolve.alias = {
       ...config.resolve.alias,
-      // Add any specific optimizations here
+      '@': path.resolve(__dirname, 'src'),
     };
 
     return config;
