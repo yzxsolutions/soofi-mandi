@@ -10,7 +10,6 @@ const FeaturedItems = dynamic(
     import("@/components/home/FeaturedItems").then((mod) => mod.FeaturedItems),
   {
     loading: () => <FeaturedItemsSkeleton />,
-    ssr: false,
   }
 );
 
