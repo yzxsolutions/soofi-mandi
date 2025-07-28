@@ -105,14 +105,7 @@ export function FeaturedItems() {
                 </div>
 
                 {/* Hover Eye Icon - Top Right */}
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 cursor-pointer">
-                  <button
-                    onClick={() => (window.location.href = `/menu/${item.id}`)}
-                    className="w-10 h-10 bg-gray-900/80 backdrop-blur-sm rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
-                  >
-                    <Eye size={18} />
-                  </button>
-                </div>
+               
               </div>
 
               {/* Item Details */}

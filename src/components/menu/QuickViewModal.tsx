@@ -219,26 +219,7 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
               </div>
             )}
 
-            {/* Spice Level */}
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Spice Level</h4>
-              <div className="flex gap-4">
-                {['mild', 'medium', 'hot'].map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => setSelectedSpiceLevel(level as 'mild' | 'medium' | 'hot')}
-                    className={`flex items-center gap-3 px-6 py-3 rounded-2xl border-2 transition-all duration-300 ${
-                      selectedSpiceLevel === level
-                        ? 'border-primary bg-primary/10 shadow-lg shadow-primary/25'
-                        : 'border-gray-700/50 bg-gray-800/30 hover:border-primary/50 hover:bg-primary/5'
-                    }`}
-                  >
-                    {getSpiceIcon(level)}
-                    <span className="capitalize font-medium text-foreground">{level}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+           
 
             {/* Add-ons */}
             {item.customizations.addOns.length > 0 && (

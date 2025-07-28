@@ -121,7 +121,7 @@ export function HeroSection() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="font-medium">Free Delivery Over QR 50</span>
+                <span className="font-medium">Free Delivery Over    ₨ 250</span>
               </div>
             </div>
           </div>

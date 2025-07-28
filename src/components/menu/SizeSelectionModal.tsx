@@ -7,7 +7,6 @@ import { X, ShoppingCart, Check } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart-store";
-import { useUIStore } from "@/stores/ui-store";
 
 interface SizeSelectionModalProps {
   item: MenuItem;
@@ -23,12 +22,9 @@ export default function SizeSelectionModal({
   const [selectedSize, setSelectedSize] = useState<string>("Full");
   const [addingToCart, setAddingToCart] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
-  const setModalOpen = useUIStore((state) => state.setModalOpen);
   const [isMounted, setIsMounted] = useState(isOpen);
 
   useEffect(() => {
-    setModalOpen(isOpen);
-
     // Handle mounting/unmounting for animations
     let timeoutId: NodeJS.Timeout;
     if (isOpen) {
@@ -38,7 +34,7 @@ export default function SizeSelectionModal({
       timeoutId = setTimeout(() => setIsMounted(false), 300);
     }
     return () => clearTimeout(timeoutId);
-  }, [isOpen, setModalOpen]);
+  }, [isOpen]);
 
   if (!isMounted) return null;
 

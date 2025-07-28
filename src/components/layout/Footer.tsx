@@ -9,24 +9,24 @@ const Footer: React.FC = () => {
     {
       icon: MapPin,
       label: 'Address',
-      value: '123 Arabian Street, Middle East District, City 12345'
+      value: 'Soofi Mandi Bangalore Bannerghatta Rd, Gottigere, Bengaluru, Kothnur, Karnataka 560076 '
     },
     {
       icon: Phone,
       label: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567'
+      value: '+91 9562577775',
+      href: 'tel:+91 9562577775'
     },
     {
       icon: Mail,
       label: 'Email',
-      value: 'info@soofimandi.com',
-      href: 'mailto:info@soofimandi.com'
+      value: 'soofimandi@gmail.com',
+      href: 'mailto:soofimandi@gmail.com'
     },
     {
       icon: Clock,
       label: 'Hours',
-      value: 'Daily: 11:00 AM - 11:00 PM'
+      value: 'Daily: 11:00 AM - 11:30 PM'
     }
   ];
 
