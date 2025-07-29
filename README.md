@@ -74,6 +74,79 @@ npm run dev
 npm run build
 ```
 
+## 🏗️ Build Process & Environment Separation
+
+This project implements strict separation between development and production build environments to ensure reliable deployments.
+
+### ✅ Netlify Build Fix Applied
+
+**Issue Resolved**: The website was failing to build on Netlify due to TypeScript compilation errors with `vitest.config.ts`.
+
+**Solution**: Modified `tsconfig.json` to exclude test files and configurations from production builds, ensuring that development dependencies like `vitest` don't cause build failures in production environments.
+
+### Build Configuration
+
+The TypeScript configuration (`tsconfig.json`) is specifically configured to exclude test files and development-only configurations from production builds:
+
+- **Test files**: `**/*.test.ts`, `**/*.test.tsx`, `**/*.spec.ts`, `**/*.spec.tsx`
+- **Test directories**: `**/__tests__/**/*`, `src/test/**/*`
+- **Development configs**: `vitest.config.ts`
+
+This prevents build failures on platforms like Netlify where development dependencies are not available during production builds.
+
+### Build Validation
+
+Use the build validation script to ensure your environment is properly configured:
+
+```bash
+npm run validate-build
+```
+
+This script:
+- ✅ Verifies TypeScript configuration excludes test files
+- ✅ Checks dependency categorization (production vs development)
+- ✅ Tests production build in clean environment
+- ✅ Validates build output integrity
+
+### Dependency Management
+
+**Production Dependencies**: Required for the application to run
+- Next.js, React, Tailwind CSS, Zustand, etc.
+
+**Development Dependencies**: Only needed during development
+- Vitest, TypeScript, ESLint, testing utilities, etc.
+
+### Troubleshooting Build Issues
+
+If you encounter build failures:
+
+1. **TypeScript Compilation Errors**: Ensure test files are properly excluded in `tsconfig.json`
+2. **Module Resolution Errors**: Check that all production dependencies are in `dependencies` (not `devDependencies`)
+3. **Netlify Build Failures**: Run `npm run validate-build` locally to simulate production environment
+4. **Missing Dependencies**: Verify all required packages are installed and properly categorized
+
+### Prevention Measures
+
+To prevent future build issues:
+
+- Always run `npm run validate-build` before deploying
+- Keep test files in designated directories (`__tests__`, `src/test`)
+- Ensure test configurations (like `vitest.config.ts`) are excluded from production builds
+- Categorize dependencies correctly in `package.json`
+- Test builds locally with `npm run build` before pushing changes
+
+### Quick Troubleshooting
+
+**Build failing with "Cannot find module" errors?**
+1. Run `npm run validate-build` to test environment separation
+2. Check that test files are excluded in `tsconfig.json`
+3. Verify dependencies are categorized correctly in `package.json`
+
+**Need detailed troubleshooting?**
+- See `BUILD_GUIDE.md` for comprehensive build documentation
+- Check `scripts/README.md` for validation script details
+- Review Netlify build logs for specific error messages
+
 ## 📋 Next Steps
 
 The core infrastructure is now complete. The next tasks in the implementation plan are:

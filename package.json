@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "validate-build": "node scripts/validate-build-environment.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

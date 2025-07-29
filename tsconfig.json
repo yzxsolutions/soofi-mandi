@@ -23,5 +23,27 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // NETLIFY BUILD FIX: Exclude test files and configurations from production builds
+  // This prevents TypeScript compilation errors during Netlify builds where
+  // development dependencies (like vitest) are not available in production environment.
+  // 
+  // Background: Next.js was attempting to compile vitest.config.ts during production builds,
+  // causing "Cannot find module 'vitest/config'" errors because vitest is a devDependency
+  // and not installed in Netlify's production build environment.
+  //
+  // Solution: Exclude all test-related files from TypeScript compilation in production
+  "exclude": [
+    "node_modules",
+    // Vitest configuration file - requires vitest/config module which is a devDependency
+    // This was the primary cause of Netlify build failures
+    "vitest.config.ts",
+    // Test files - these should not be included in production builds
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    // Test directories - exclude all test-related directories
+    "**/__tests__/**/*",
+    "src/test/**/*"
+  ]
 }

@@ -7,25 +7,37 @@ interface CustomerDetails {
 }
 
 /**
- * Generates a unique bill number in the format BILL-SM-0001
+ * Generates a unique bill number in the format BILL-SM-DDMM-0001
+ * Includes last 4 digits of current date (DDMM) for uniqueness
  * @returns A unique bill number string
  */
 function generateBillNumber(): string {
-  const BILL_COUNTER_KEY = 'soofi_mandi_bill_counter';
-  
+  const BILL_COUNTER_KEY = "soofi_mandi_bill_counter";
+
+  // Get current date and format as YYYYMMDD, then take last 4 digits (MMDD)
+  const currentDate = new Date();
+  const year = currentDate.getFullYear().toString();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  const day = currentDate.getDate().toString().padStart(2, "0");
+  const dateString = `${year}${month}${day}`;
+  const last4Digits = dateString.slice(-4); // Gets MMDD (last 4 digits)
+
   // Get the current counter from localStorage, default to 0 if not found
-  let currentCounter = parseInt(localStorage.getItem(BILL_COUNTER_KEY) || '0', 10);
-  
+  let currentCounter = parseInt(
+    localStorage.getItem(BILL_COUNTER_KEY) || "0",
+    10
+  );
+
   // Increment the counter
   currentCounter += 1;
-  
+
   // Save the updated counter back to localStorage
   localStorage.setItem(BILL_COUNTER_KEY, currentCounter.toString());
-  
+
   // Format the bill number with leading zeros (4 digits)
-  const formattedNumber = currentCounter.toString().padStart(4, '0');
-  
-  return `BILL-SM-${formattedNumber}`;
+  const formattedNumber = currentCounter.toString().padStart(4, "0");
+
+  return `BILL-SM-${last4Digits}-${formattedNumber}`;
 }
 
 /**
