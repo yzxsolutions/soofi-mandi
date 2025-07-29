@@ -256,7 +256,7 @@ export default function ItemDetailHero({ item }: ItemDetailHeroProps) {
                 <div className="mobile-flex-col sm:flex-row sm:items-baseline mobile-gap-4">
                   <div className="relative">
                     <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-shimmer-text">
-                      QR {item.price.toFixed(2)}
+                      ₹ {item.price.toFixed(2)}
                     </span>
                     <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary rounded-full opacity-30"></div>
                   </div>
@@ -296,7 +296,7 @@ export default function ItemDetailHero({ item }: ItemDetailHeroProps) {
                 {/* Price Display */}
                 <div className="text-center py-6 bg-gradient-to-br from-gray-800/40 to-gray-800/60 backdrop-blur-sm rounded-2xl border border-gray-700/40">
                   <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-shimmer-text mb-2">
-                    QR {calculatePrice().toFixed(2)}
+                    ₹ {calculatePrice().toFixed(2)}
                   </div>
                   <div className="text-sm text-foreground/60">
                     Total for {quantity} item{quantity > 1 ? 's' : ''}
@@ -324,7 +324,7 @@ export default function ItemDetailHero({ item }: ItemDetailHeroProps) {
                               <div className="text-sm text-foreground/60">{size.description}</div>
                             </div>
                             <div className="text-primary font-bold">
-                              {size.price >= 0 ? '+' : ''}QR {size.price.toFixed(2)}
+                              {size.price >= 0 ? '+' : ''}₹ {size.price.toFixed(2)}
                             </div>
                           </div>
                         </button>
@@ -370,7 +370,7 @@ export default function ItemDetailHero({ item }: ItemDetailHeroProps) {
                           }`}
                         >
                           <span className="font-medium text-foreground">{addOn.name}</span>
-                          <span className="font-bold text-primary">+QR {addOn.price.toFixed(2)}</span>
+                          <span className="font-bold text-primary">+₹ {addOn.price.toFixed(2)}</span>
                         </button>
                       ))}
                     </div>
@@ -485,7 +485,7 @@ export default function ItemDetailHero({ item }: ItemDetailHeroProps) {
 
                 {/* Additional Info */}
                 <div className="text-center text-sm text-foreground/60 space-y-2">
-                  <p>🚚 Free delivery on orders over QR 50</p>
+                  <p>🚚 Free delivery on orders over ₹ 250</p>
                   <p>⏱️ Estimated preparation: {item.preparationTime} minutes</p>
                 </div>
               </div>

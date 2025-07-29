@@ -195,7 +195,7 @@ export default function CustomizationOptions({ item }: CustomizationOptionsProps
                   </div>
                   <span className="font-bold text-foreground text-lg">{addOn.name}</span>
                 </div>
-                <span className="font-bold text-primary text-lg">+QR {addOn.price.toFixed(2)}</span>
+                <span className="font-bold text-primary text-lg">+₹ {addOn.price.toFixed(2)}</span>
               </button>
             ))}
           </div>
@@ -331,7 +331,7 @@ export default function CustomizationOptions({ item }: CustomizationOptionsProps
             </div>
             <div>
               <div className="font-semibold">Free Delivery</div>
-              <div className="text-sm text-foreground/60">On orders over QR 50</div>
+              <div className="text-sm text-foreground/60">On orders over ₨ 200</div>
             </div>
           </div>
           <div className="flex items-center justify-center gap-3 text-foreground/80">

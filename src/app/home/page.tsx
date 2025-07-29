@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/SkeletonLoader";
 
 const FeaturedItems = dynamic(
   () =>
-    import("@/components/home/FeaturedItems").then((mod) => mod.FeaturedItems),
+    import("@/components/home/FeaturedItemsNew").then((mod) => mod.FeaturedItemsNew),
   {
     loading: () => <FeaturedItemsSkeleton />,
   }
@@ -35,7 +35,7 @@ export default function HomePage() {
       <HeroSection />
       {/* <RecentOrders /> */}
       <FeaturedItems />
-      <ContactSection />
+      
   
     </div>
   );

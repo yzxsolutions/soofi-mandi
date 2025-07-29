@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ShoppingCart, X, Plus, Minus, ArrowRight, Tag } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/stores/cart-store";
+import { useCartCount } from "@/hooks/useCartCount";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -84,8 +85,9 @@ function CouponSection() {
 
 export default function FloatingCart() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { items, itemCount, updateQuantity, removeItem, discount, couponCode } =
+  const { items, updateQuantity, removeItem, discount, couponCode } =
     useCartStore();
+  const itemCount = useCartCount();
 
   // Get calculated values
   const subtotal = useCartStore((state) => state.getSubtotal());

@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { MobileForm, MobileInput } from '@/components/ui/MobileForm';
 import { useCheckoutStore } from '@/stores/checkout-store';
-import { CustomerInfo } from '@/types';
+import { SavedAddressSelector } from './SavedAddressSelector';
+import { CustomerInfo, DeliveryInfo } from '@/types';
 
 type CustomerFormProps = {
   onNext: () => void;
@@ -12,7 +13,7 @@ type CustomerFormProps = {
 };
 
 export function CustomerForm({ onNext, onBack }: CustomerFormProps) {
-  const { customerInfo, setCustomerInfo } = useCheckoutStore();
+  const { customerInfo, deliveryInfo, setCustomerInfo, setDeliveryInfo } = useCheckoutStore();
   const [formData, setFormData] = useState<CustomerInfo>(customerInfo);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +22,12 @@ export function CustomerForm({ onNext, onBack }: CustomerFormProps) {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleSelectSavedAddress = (savedCustomerInfo: CustomerInfo, savedDeliveryInfo: DeliveryInfo) => {
+    setFormData(savedCustomerInfo);
+    setCustomerInfo(savedCustomerInfo);
+    setDeliveryInfo(savedDeliveryInfo);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,6 +39,11 @@ export function CustomerForm({ onNext, onBack }: CustomerFormProps) {
 
   return (
     <MobileForm onSubmit={handleSubmit}>
+      <SavedAddressSelector 
+        onSelectAddress={handleSelectSavedAddress}
+        className="mb-6"
+      />
+      
       <MobileInput
         label="Full Name"
         id="name"

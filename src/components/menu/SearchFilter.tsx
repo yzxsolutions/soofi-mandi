@@ -158,7 +158,7 @@ export default function SearchFilter({
           {/* Price Range */}
           <div>
             <label className="block text-xs font-medium text-foreground/80 mb-2">
-              Price Range (QR)
+              Price Range (₹)
             </label>
             <div className="flex items-center gap-2">
               <input

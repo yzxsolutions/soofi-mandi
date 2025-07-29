@@ -166,11 +166,11 @@ export default function SizeSelectionModal({
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold text-primary md:text-xl">
-                      QR {getSizePrice(size.name)}
+                    ₹ {getSizePrice(size.name)}
                     </div>
                     {size.price !== 0 && (
                       <div className="text-xs text-foreground/60">
-                        {size.price > 0 ? "+" : ""}QR {size.price}
+                        {size.price > 0 ? "+" : ""} ₹ {size.price}
                       </div>
                     )}
                   </div>
@@ -184,17 +184,10 @@ export default function SizeSelectionModal({
         <div className="mt-auto border-t border-primary/20 p-6">
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button
-              onClick={onClose}
-              variant="outline"
-              className="flex-1 rounded-xl border-2 border-gray-600/50 bg-transparent py-3 text-foreground hover:border-gray-500/50 hover:bg-gray-800/30"
-            >
-              Cancel
-            </Button>
-            <Button
               onClick={handleAddToCart}
               disabled={addingToCart}
-              variant="cta"
-              className="flex-1 rounded-xl bg-primary py-3 font-semibold"
+              variant="outline"
+              className="flex-1 rounded-xl border-2 border-gray-600/50 bg-transparent py-3 text-foreground hover:border-gray-500/50 hover:bg-gray-800/30"
             >
               {addingToCart ? (
                 <div className="flex items-center justify-center gap-2">
@@ -204,7 +197,7 @@ export default function SizeSelectionModal({
               ) : (
                 <div className="flex items-center justify-center gap-2">
                   <ShoppingCart className="h-4 w-4" />
-                  Add - QR {getSizePrice(selectedSize)}
+                  Add - ₹ {getSizePrice(selectedSize)}
                 </div>
               )}
             </Button>
@@ -222,3 +215,4 @@ export default function SizeSelectionModal({
     </div>
   );
 }
+

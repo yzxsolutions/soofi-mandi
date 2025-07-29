@@ -13,7 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCartStore } from "@/stores/cart-store";
+import { useCartCount } from "@/hooks/useCartCount";
 import { hasRecentOrders } from "@/lib/orderStorage";
 import Image from "next/image";
 
@@ -77,7 +77,7 @@ const DesktopNavigationItem: React.FC<NavigationItemProps> = ({
 
 const DesktopNavigation: React.FC = () => {
   const pathname = usePathname();
-  const { itemCount } = useCartStore();
+  const itemCount = useCartCount();
   const [showOrderHistory, setShowOrderHistory] = useState(false);
   
   // Check for recent orders on component mount and when pathname changes

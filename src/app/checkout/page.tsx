@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useCartStore } from "@/stores/cart-store";
 import { useCheckoutStore } from "@/stores/checkout-store";
+import { useSavedAddressesCleanup } from "@/hooks/useSavedAddressesCleanup";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 import { CustomerForm } from "@/components/checkout/CustomerForm";
 import { DeliveryForm } from "@/components/checkout/DeliveryForm";
@@ -18,10 +19,13 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   
+  // Clean up expired saved addresses
+  useSavedAddressesCleanup();
+  
   // Reset checkout data when the page loads
   useEffect(() => {
     resetCheckout();
-  }, []);
+  }, [resetCheckout]);
 
   // Redirect if cart is empty
   if (itemCount === 0) {
@@ -110,7 +114,8 @@ export default function CheckoutPage() {
         </div>
 
         {/* Progress Indicator */}
-        <div className="mb-8 sm:mb-12">
+        <div className="mb-8 w-full flex justify-center items-center
+         sm:mb-12">
           <CheckoutProgress steps={steps} currentStep={currentStep} />
         </div>
 

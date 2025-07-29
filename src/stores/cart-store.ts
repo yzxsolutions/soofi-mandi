@@ -21,6 +21,7 @@ interface CartStore {
   itemCount: number;
   couponCode?: string;
   discount: number;
+  _hasHydrated: boolean;
 
   // Actions
   addItem: (item: CartItem) => void;
@@ -33,6 +34,7 @@ interface CartStore {
   clearCart: () => void;
   applyCoupon: (code: string) => void;
   removeCoupon: () => void;
+  _setHasHydrated: (hasHydrated: boolean) => void;
 
   // Computed values
   getSubtotal: () => number;
@@ -52,6 +54,7 @@ export const useCartStore = create<CartStore>()(
       total: 0,
       itemCount: 0,
       discount: 0,
+      _hasHydrated: false,
 
       addItem: (newItem) => {
         set((state) => {
@@ -144,6 +147,20 @@ export const useCartStore = create<CartStore>()(
         }));
       },
 
+      _setHasHydrated: (hasHydrated) => {
+        set({ _hasHydrated: hasHydrated });
+        if (hasHydrated) {
+          // Recalculate computed values after hydration
+          const state = get();
+          const itemCount = state.items.reduce(
+            (sum, item) => sum + item.quantity,
+            0
+          );
+          const total = state.getTotal();
+          set({ itemCount, total });
+        }
+      },
+
       applyCoupon: (code) => {
         // Simple coupon logic - in real app, this would call an API
         const discountMap: Record<string, number> = {
@@ -203,6 +220,11 @@ export const useCartStore = create<CartStore>()(
         couponCode: state.couponCode,
         discount: state.discount,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state._setHasHydrated(true);
+        }
+      },
     }
   )
 );

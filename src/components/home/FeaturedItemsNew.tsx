@@ -9,9 +9,8 @@ import { MenuItem } from "@/types";
 import { ShoppingCart } from "lucide-react";
 import SizeSelectionModal from "../menu/SizeSelectionModal";
 import { FeaturedItemsSkeleton } from "@/components/ui/SkeletonLoader";
-import { LazyOnView } from "@/components/ui/LazyComponent";
 
-export function FeaturedItems() {
+export function FeaturedItemsNew() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [showSizeModal, setShowSizeModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

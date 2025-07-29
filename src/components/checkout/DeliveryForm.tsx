@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { MobileForm, MobileTextarea, MobileInput } from '@/components/ui/MobileForm';
 import { useCheckoutStore } from '@/stores/checkout-store';
+import { useSavedAddressesStore } from '@/stores/saved-addresses-store';
 import { DeliveryInfo } from '@/types';
 
 type DeliveryFormProps = {
@@ -13,6 +14,7 @@ type DeliveryFormProps = {
 
 export function DeliveryForm({ onNext, onBack }: DeliveryFormProps) {
     const { deliveryInfo, setDeliveryInfo, customerInfo } = useCheckoutStore();
+    const { saveAddress } = useSavedAddressesStore();
     const [formData, setFormData] = useState<DeliveryInfo>({
         ...deliveryInfo,
         contactPerson: deliveryInfo.contactPerson || customerInfo.name
@@ -30,6 +32,12 @@ export function DeliveryForm({ onNext, onBack }: DeliveryFormProps) {
         e.preventDefault();
         // Save delivery info to store
         setDeliveryInfo(formData);
+        
+        // Save address for future use (1 day expiry)
+        if (customerInfo.name && customerInfo.phone && customerInfo.email && formData.address) {
+            saveAddress(customerInfo, formData);
+        }
+        
         onNext();
     };
 

@@ -16,7 +16,7 @@ interface CheckoutProgressProps {
 export function CheckoutProgress({ steps, currentStep }: CheckoutProgressProps) {
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-center">
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-center flex-1">
             {/* Step Circle */}

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter } from 'lucide-react';
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   const contactInfo = [
     {
@@ -144,7 +148,7 @@ const Footer: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <p className="text-body text-white/60">
-                © {currentYear} Soofi Mandi. All rights reserved.
+                © {currentYear || 2024} Soofi Mandi. All rights reserved.
               </p>
               <div className="flex space-x-6">
                 <Link

@@ -11,7 +11,7 @@ import {
   Phone,
   ChevronUp
 } from 'lucide-react';
-import { useCartStore } from '@/stores/cart-store';
+import { useCartCount } from '@/hooks/useCartCount';
 import { useUIStore } from '@/stores/ui-store';
 import { cn } from '@/lib/utils';
 
@@ -24,7 +24,7 @@ interface NavItem {
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  const { itemCount } = useCartStore();
+  const itemCount = useCartCount();
   const isModalOpen = useUIStore((state) => state.isModalOpen);
 
   const navItems: NavItem[] = [
